@@ -6,7 +6,7 @@
     "workspaceName": { "type": "string" },
     "connectorDefinitionName": { "type": "string", "defaultValue": "TOPdeskIncidentsDefinition" },
     "dataConnectorName": { "type": "string", "defaultValue": "TOPdeskIncidents" },
-    "publisher": { "type": "string", "defaultValue": "Jasper Minnaert - Wortell" },
+    "publisher": { "type": "string", "defaultValue": "Wortell Enterprise Security" },
     "topdeskBaseUrl": { "type": "string" },
     "username": { "type": "securestring" },
     "password": { "type": "securestring" },
