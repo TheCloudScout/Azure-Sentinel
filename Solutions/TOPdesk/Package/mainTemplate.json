@@ -1,0 +1,87 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "author": "Jasper Minnaert & Koos Goossens - mdr@wortell.nl",
+    "comments": "Solution template for TOPdesk"
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Not used, but needed to pass arm-ttk test `Location-Should-Not-Be-Hardcoded`.  We instead use the `workspace-location` which is derived from the LA workspace"
+      }
+    },
+    "workspace-location": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "[concat('Region to deploy solution resources -- separate from location selection',parameters('location'))]"
+      }
+    },
+    "workspace": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
+      }
+    }
+  },
+  "variables": {
+    "email": "mdr@wortell.nl",
+    "_email": "[variables('email')]",
+    "_solutionName": "TOPdesk",
+    "_solutionVersion": "3.0.0",
+    "solutionId": "azuresentinel.azure-sentinel-solution-topdeskincidents",
+    "_solutionId": "[variables('solutionId')]",
+    "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]"
+  },
+  "resources": {
+    "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+    "apiVersion": "2025-07-01-preview",
+    "location": "[parameters('workspace-location')]",
+    "properties": {
+      "version": "3.0.0",
+      "kind": "Solution",
+      "contentSchemaVersion": "3.0.0",
+      "displayName": "TOPdesk",
+      "publisherDisplayName": "Wortell Enterprise Security",
+      "descriptionHtml": "<p><strong>Note:</strong> Please refer to the following before installing the solution:</p>\n<p>• Review the solution <a href=\"https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/TOPdesk/ReleaseNotes.md\">Release Notes</a></p>\n<p>• There may be <a href=\"https://aka.ms/sentinelsolutionsknownissues\">known issues</a> pertaining to this Solution, please refer to them before installing.</p>\n<p><a href=\"https://www.topdesk.com/en/itsm-software/\">TOPdesk ITSM-software</a> helps busy service teams handle incoming requests, automatically assign tasks to the right people, and see who's doing what - so you can stay ahead instead of just keeping up.</p>\n<p><strong>Underlying Microsoft Technologies used:</strong>\nThis solution takes a dependency on the following technologies, and some of these dependencies either may be in <a href=\"https://azure.microsoft.com/support/legal/preview-supplemental-terms/\">Preview</a> state or might result in additional ingestion or operational costs</p>\n<ol type=\"a\">\n<li><a href=\"https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector\">Codeless Connector Framework</a></li>\n</ol>\n<p><a href=\"https://aka.ms/azuresentinel\">Learn more about Microsoft Sentinel</a> | <a href=\"https://aka.ms/azuresentinelsolutionsdoc\">Learn more about Solutions</a></p>\n",
+      "contentKind": "Solution",
+      "contentProductId": "[variables('_solutioncontentProductId')]",
+      "id": "[variables('_solutioncontentProductId')]",
+      "icon": "<img src=\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/TOPdesk.svg\" width=\"75px\" height=\"75px\">",
+      "contentId": "[variables('_solutionId')]",
+      "parentId": "[variables('_solutionId')]",
+      "source": {
+        "kind": "Solution",
+        "name": "TOPdesk",
+        "sourceId": "[variables('_solutionId')]"
+      },
+      "author": {
+        "name": "Jasper Minnaert & Koos Goossens",
+        "email": "[variables('_email')]"
+      },
+      "support": {
+        "name": "Wortell Enterprise Security",
+        "email": "mdr@wortell.nl",
+        "tier": "Partner",
+        "link": "https://www.wortell.nl"
+      },
+      "firstPublishDate": "2026-02-10",
+      "lastPublishDate": "2026-02-10",
+      "providers": [
+        "TOPdesk"
+      ],
+      "categories": {
+        "domains": [
+          "Application"
+        ]
+      }
+    },
+    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]"
+  },
+  "outputs": {}
+}
