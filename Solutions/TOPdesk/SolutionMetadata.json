@@ -1,0 +1,21 @@
+{
+    "publisherId": "azuresentinel",
+    "offerId": "azure-sentinel-solution-topdeskincidents",
+    "firstPublishDate": "2026-02-10",
+    "lastPublishDate": "2021-08-09",
+    "providers": [
+        "Cisco"
+    ],
+    "categories": {
+        "domains": [
+            "Security - Network"
+        ],
+        "verticals": []
+    },
+    "support": {
+        "name": "Microsoft Corporation",
+        "email": "support@microsoft.com",
+        "tier": "Microsoft",
+        "link": "https://support.microsoft.com"
+    }
+} 
