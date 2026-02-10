@@ -36,7 +36,7 @@
     "_solutionVersion": "3.0.0",
     "solutionId": "azuresentinel.azure-sentinel-solution-topdeskincidents",
     "_solutionId": "[variables('solutionId')]",
-    "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]"
+    "_solutioncontentProductId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
   },
   "resources": {
     "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
