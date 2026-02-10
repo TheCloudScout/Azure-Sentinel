@@ -1,0 +1,43 @@
+{
+  "name": "TOPdeskIncidents",
+  "kind": "RestApiPoller",
+  "etag": "",
+  "properties": {
+    "connectorDefinitionName": "TOPdeskIncidentsDefinition",
+    "auth": {
+      "type": "Basic",
+      "UserName": "{{username}}",
+      "Password": "{{password}}"
+    },
+    "request": {
+      "apiEndpoint": "https://{{topdeskBaseUrl}}/tas/api/incidents",
+      "httpMethod": "GET",
+      "queryWindowInMin": 5,
+      "timeoutInSeconds": 60,
+      "retryCount": 3,
+      "headers": {
+        "Accept": "application/json"
+      },
+      "queryParameters": {
+        "page_size": 200,
+        "dateFormat": "iso8601"
+      }
+    },
+    "paging": {
+      "pagingType": "Offset",
+      "offsetParaName": "start",
+      "pageSize": 200,
+      "pageSizeParameterName": "page_size",
+      "pagingInfoPlacement": "QueryString"
+    },
+    "response": {
+      "format": "json",
+      "eventsJsonPaths": ["$"]
+    },
+    "dcrConfig": {
+      "dataCollectionEndpoint": "{{dataCollectionEndpointUri}}",
+      "dataCollectionRuleImmutableId": "{{dataCollectionRuleImmutableId}}",
+      "streamName": "{{streamName}}"
+    }
+  }
+}
