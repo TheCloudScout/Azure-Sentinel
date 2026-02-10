@@ -2,6 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "location": { "type": "string", "defaultValue": "westeurope" },
     "workspaceName": { "type": "string" },
     "connectorDefinitionName": { "type": "string", "defaultValue": "TOPdeskIncidentsDefinition" },
     "dataConnectorName": { "type": "string", "defaultValue": "TOPdeskIncidents" },
@@ -9,17 +10,131 @@
     "topdeskBaseUrl": { "type": "string" },
     "username": { "type": "securestring" },
     "password": { "type": "securestring" },
-    "dataCollectionEndpointUri": { "type": "string" },
-    "dataCollectionRuleImmutableId": { "type": "string" },
+    "dceName": { "type": "string", "defaultValue": "dce-topdesk" },
+    "dcrName": { "type": "string", "defaultValue": "dcr-topdesk-incidents" },
+    "tableName": { "type": "string", "defaultValue": "TOPdeskIncidents_CL" },
     "streamName": { "type": "string", "defaultValue": "Custom-TOPdeskIncidents_CL" },
     "queryWindowInMin": { "type": "int", "defaultValue": 5 },
     "pageSize": { "type": "int", "defaultValue": 200 }
   },
   "variables": {
     "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]",
-    "connectorDefinitionResourceId": "[concat(variables('workspaceResourceId'), '/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/', parameters('connectorDefinitionName'))]"
+    "connectorDefinitionResourceId": "[concat(variables('workspaceResourceId'), '/providers/Microsoft.SecurityInsights/dataConnectorDefinitions/', parameters('connectorDefinitionName'))]",
+    "dceResourceId": "[resourceId('Microsoft.Insights/dataCollectionEndpoints', parameters('dceName'))]",
+    "dcrResourceId": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dcrName'))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.Insights/dataCollectionEndpoints",
+      "apiVersion": "2024-03-11",
+      "name": "[parameters('dceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "networkAcls": {
+          "publicNetworkAccess": "Enabled"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2022-10-01",
+      "name": "[concat(parameters('workspaceName'), '/', parameters('tableName'))]",
+      "properties": {
+        "plan": "Analytics",
+        "retentionInDays": 30,
+        "totalRetentionInDays": 30,
+        "schema": {
+          "name": "[parameters('tableName')]",
+          "columns": [
+            { "name": "TimeGenerated", "type": "datetime" },
+            { "name": "SourceSystem", "type": "string" },
+            { "name": "IncidentId", "type": "string" },
+            { "name": "IncidentNumber", "type": "string" },
+            { "name": "Title", "type": "string" },
+            { "name": "Description", "type": "string" },
+            { "name": "Status", "type": "string" },
+            { "name": "Priority", "type": "string" },
+            { "name": "Impact", "type": "string" },
+            { "name": "Urgency", "type": "string" },
+            { "name": "Category", "type": "string" },
+            { "name": "Subcategory", "type": "string" },
+            { "name": "CallType", "type": "string" },
+            { "name": "CallerId", "type": "string" },
+            { "name": "CallerName", "type": "string" },
+            { "name": "OperatorId", "type": "string" },
+            { "name": "OperatorName", "type": "string" },
+            { "name": "OperatorGroupId", "type": "string" },
+            { "name": "OperatorGroupName", "type": "string" },
+            { "name": "CreatedDateTime", "type": "datetime" },
+            { "name": "UpdatedDateTime", "type": "datetime" },
+            { "name": "ClosedDateTime", "type": "datetime" },
+            { "name": "TargetDateTime", "type": "datetime" },
+            { "name": "Archived", "type": "bool" },
+            { "name": "IsPartial", "type": "bool" },
+            { "name": "IsFirstLine", "type": "bool" },
+            { "name": "IsSecondLine", "type": "bool" },
+            { "name": "RawEvent", "type": "dynamic" }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2024-03-11",
+      "name": "[parameters('dcrName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[variables('dceResourceId')]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('tableName'))]"
+      ],
+      "properties": {
+        "dataCollectionEndpointId": "[variables('dceResourceId')]",
+        "description": "TOPdesk incidents CCF ingestion",
+        "streamDeclarations": {
+          "[parameters('streamName')]": {
+            "columns": [
+              { "name": "source", "type": "dynamic" },
+              { "name": "id", "type": "string" },
+              { "name": "number", "type": "string" },
+              { "name": "briefDescription", "type": "string" },
+              { "name": "request", "type": "string" },
+              { "name": "status", "type": "string" },
+              { "name": "creationDate", "type": "datetime" },
+              { "name": "modificationDate", "type": "datetime" },
+              { "name": "caller", "type": "dynamic" },
+              { "name": "operator", "type": "dynamic" },
+              { "name": "operatorGroup", "type": "dynamic" },
+              { "name": "category", "type": "dynamic" },
+              { "name": "subcategory", "type": "dynamic" },
+              { "name": "priority", "type": "dynamic" },
+              { "name": "impact", "type": "dynamic" },
+              { "name": "urgency", "type": "dynamic" },
+              { "name": "callType", "type": "dynamic" }
+            ]
+          }
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "laDest",
+              "workspaceResourceId": "[variables('workspaceResourceId')]"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "[parameters('streamName')]"
+            ],
+            "destinations": [
+              "laDest"
+            ],
+            "transformKql": "source\n| extend RawEvent = parse_json(tostring(source))\n| extend SourceSystem = 'TOPdesk'\n| extend priorityObj = parse_json(tostring(RawEvent['priority']))\n| extend impactObj = parse_json(tostring(RawEvent['impact']))\n| extend urgencyObj = parse_json(tostring(RawEvent['urgency']))\n| extend categoryObj = parse_json(tostring(RawEvent['category']))\n| extend subcategoryObj = parse_json(tostring(RawEvent['subcategory']))\n| extend callTypeObj = parse_json(tostring(RawEvent['callType']))\n| extend callerObj = parse_json(tostring(RawEvent['caller']))\n| extend operatorObj = parse_json(tostring(RawEvent['operator']))\n| extend operatorGroupObj = parse_json(tostring(RawEvent['operatorGroup']))\n| extend IncidentId = tostring(RawEvent['id'])\n| extend IncidentNumber = tostring(RawEvent['number'])\n| extend Title = tostring(RawEvent['briefDescription'])\n| extend Description = tostring(RawEvent['request'])\n| extend Status = tostring(RawEvent['status'])\n| extend Priority = tostring(priorityObj['name'])\n| extend Impact = tostring(impactObj['name'])\n| extend Urgency = tostring(urgencyObj['name'])\n| extend Category = tostring(categoryObj['name'])\n| extend Subcategory = tostring(subcategoryObj['name'])\n| extend CallType = tostring(callTypeObj['name'])\n| extend CallerId = tostring(callerObj['id'])\n| extend CallerName = tostring(callerObj['name'])\n| extend OperatorId = tostring(operatorObj['id'])\n| extend OperatorName = tostring(operatorObj['name'])\n| extend OperatorGroupId = tostring(operatorGroupObj['id'])\n| extend OperatorGroupName = tostring(operatorGroupObj['name'])\n| extend CreatedDateTime = todatetime(RawEvent['creationDate'])\n| extend UpdatedDateTime = todatetime(RawEvent['modificationDate'])\n| extend ClosedDateTime = todatetime(RawEvent['closedDate'])\n| extend TargetDateTime = todatetime(RawEvent['targetDate'])\n| extend Archived = tobool(RawEvent['archived'])\n| extend IsPartial = tobool(RawEvent['partial'])\n| extend IsFirstLine = tobool(RawEvent['firstLine'])\n| extend IsSecondLine = tobool(RawEvent['secondLine'])\n| extend TimeGenerated = todatetime(RawEvent['modificationDate'])\n| project TimeGenerated, SourceSystem, IncidentId, IncidentNumber, Title, Description, Status, Priority, Impact, Urgency, Category, Subcategory, CallType, CallerId, CallerName, OperatorId, OperatorName, OperatorGroupId, OperatorGroupName, CreatedDateTime, UpdatedDateTime, ClosedDateTime, TargetDateTime, Archived, IsPartial, IsFirstLine, IsSecondLine, RawEvent",
+            "outputStream": "[concat('Custom-', parameters('tableName'))]"
+          }
+        ]
+      }
+    },
     {
       "type": "Microsoft.SecurityInsights/dataConnectorDefinitions",
       "apiVersion": "2025-09-01",
@@ -31,7 +146,7 @@
           "title": "TOPdesk",
           "publisher": "[parameters('publisher')]",
           "descriptionMarkdown": "Ingest TOPdesk incidents using the Codeless Connector Platform (RestApiPoller).",
-          "graphQueriesTableName": "TOPdeskIncidents_CL",
+          "graphQueriesTableName": "[parameters('tableName')]",
           "graphQueries": [
             {
               "metricName": "Events received",
@@ -117,7 +232,8 @@
       "scope": "[variables('workspaceResourceId')]",
       "kind": "RestApiPoller",
       "dependsOn": [
-        "[variables('connectorDefinitionResourceId')]"
+        "[variables('connectorDefinitionResourceId')]",
+        "[variables('dcrResourceId')]"
       ],
       "properties": {
         "connectorDefinitionName": "[parameters('connectorDefinitionName')]",
@@ -152,8 +268,8 @@
           "eventsJsonPaths": [ "$" ]
         },
         "dcrConfig": {
-          "dataCollectionEndpoint": "[parameters('dataCollectionEndpointUri')]",
-          "dataCollectionRuleImmutableId": "[parameters('dataCollectionRuleImmutableId')]",
+          "dataCollectionEndpoint": "[reference(variables('dceResourceId'), '2024-03-11').properties.logsIngestion.endpoint]",
+          "dataCollectionRuleImmutableId": "[reference(variables('dcrResourceId'), '2024-03-11').properties.immutableId]",
           "streamName": "[parameters('streamName')]"
         }
       }
