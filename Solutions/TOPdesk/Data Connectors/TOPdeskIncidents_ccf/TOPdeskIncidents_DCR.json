@@ -1,0 +1,32 @@
+{
+    "type": "Microsoft.Insights/dataCollectionRules",
+    "apiVersion": "2022-06-01",
+    "name": "TOPdesk-DCR",
+    "location": "{{location}}",
+    "properties": {
+        "dataCollectionEndpointId": "{{dataCollectionEndpointId}}",
+        "streamDeclarations": {
+            "Custom-TOPdeskIncidents_CL": {
+                "columns": [
+                    { "name": "source", "type": "dynamic" }
+                ]
+            }
+        },
+        "destinations": {
+            "logAnalytics": [
+                {
+                    "workspaceResourceId": "{{workspaceResourceId}}",
+                    "name": "clv2ws1"
+                }
+            ]
+        },
+        "dataFlows": [
+            {
+                "streams": ["Custom-TOPdeskIncidents_CL"],
+                "destinations": ["clv2ws1"],
+                "transformKql": "source\n| extend RawEvent = parse_json(tostring(source))\n| extend SourceSystem = 'TOPdesk'\n| extend priorityObj = parse_json(tostring(RawEvent['priority']))\n| extend impactObj = parse_json(tostring(RawEvent['impact']))\n| extend urgencyObj = parse_json(tostring(RawEvent['urgency']))\n| extend categoryObj = parse_json(tostring(RawEvent['category']))\n| extend subcategoryObj = parse_json(tostring(RawEvent['subcategory']))\n| extend callTypeObj = parse_json(tostring(RawEvent['callType']))\n| extend callerObj = parse_json(tostring(RawEvent['caller']))\n| extend operatorObj = parse_json(tostring(RawEvent['operator']))\n| extend operatorGroupObj = parse_json(tostring(RawEvent['operatorGroup']))\n| extend IncidentId = tostring(RawEvent['id'])\n| extend IncidentNumber = tostring(RawEvent['number'])\n| extend Title = tostring(RawEvent['briefDescription'])\n| extend Description = tostring(RawEvent['request'])\n| extend Status = tostring(RawEvent['status'])\n| extend Priority = tostring(priorityObj['name'])\n| extend Impact = tostring(impactObj['name'])\n| extend Urgency = tostring(urgencyObj['name'])\n| extend Category = tostring(categoryObj['name'])\n| extend Subcategory = tostring(subcategoryObj['name'])\n| extend CallType = tostring(callTypeObj['name'])\n| extend CallerId = tostring(callerObj['id'])\n| extend CallerName = tostring(callerObj['name'])\n| extend OperatorId = tostring(operatorObj['id'])\n| extend OperatorName = tostring(operatorObj['name'])\n| extend OperatorGroupId = tostring(operatorGroupObj['id'])\n| extend OperatorGroupName = tostring(operatorGroupObj['name'])\n| extend CreatedDateTime = todatetime(RawEvent['creationDate'])\n| extend UpdatedDateTime = todatetime(RawEvent['modificationDate'])\n| extend ClosedDateTime = todatetime(RawEvent['closedDate'])\n| extend TargetDateTime = todatetime(RawEvent['targetDate'])\n| extend Archived = tobool(RawEvent['archived'])\n| extend IsPartial = tobool(RawEvent['partial'])\n| extend IsFirstLine = tobool(RawEvent['firstLine'])\n| extend IsSecondLine = tobool(RawEvent['secondLine'])\n| extend TimeGenerated = todatetime(RawEvent['modificationDate'])\n| project TimeGenerated, SourceSystem, IncidentId, IncidentNumber, Title, Description, Status, Priority, Impact, Urgency, Category, Subcategory, CallType, CallerId, CallerName, OperatorId, OperatorName, OperatorGroupId, OperatorGroupName, CreatedDateTime, UpdatedDateTime, ClosedDateTime, TargetDateTime, Archived, IsPartial, IsFirstLine, IsSecondLine, RawEvent",
+                "outputStream": "Custom-TOPdeskIncidents_CL"
+            }
+        ]
+    }
+}

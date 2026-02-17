@@ -1,0 +1,49 @@
+[
+    {
+        "name": "TOPdeskIncidentsPoller",
+        "apiVersion": "2023-02-01-preview",
+        "type": "Microsoft.SecurityInsights/dataConnectors",
+        "kind": "RestApiPoller",
+        "properties": {
+            "connectorDefinitionName": "TOPdeskIncidentsDefinition",
+            "dataType": "TOPdeskIncidents_CL",
+            "dcrConfig": {
+                "streamName": "Custom-TOPdeskIncidents_CL",
+                "dataCollectionEndpoint": "{{dataCollectionEndpoint}}",
+                "dataCollectionRuleImmutableId": "{{dataCollectionRuleImmutableId}}"
+            },
+            "auth": {
+                "type": "Basic",
+                "UserName": "[[parameters('username')]",
+                "Password": "[[parameters('password')]"
+            },
+            "request": {
+                "apiEndpoint": "[[concat('https://', parameters('topdeskBaseUrl'), '/tas/api/incidents')]",
+                "httpMethod": "GET",
+                "queryWindowInMin": 5,
+                "timeoutInSeconds": 60,
+                "retryCount": 3,
+                "rateLimitQPS": 10,
+                "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                "startTimeAttributeName": "modification_date_start",
+                "endTimeAttributeName": "modification_date_end",
+                "headers": {
+                    "Accept": "application/json"
+                },
+                "queryParameters": {
+                    "page_size": 200
+                }
+            },
+            "paging": {
+                "pagingType": "Offset",
+                "offsetParaName": "start",
+                "pageSize": 200,
+                "pageSizeParameterName": "page_size"
+            },
+            "response": {
+                "format": "json",
+                "eventsJsonPaths": ["$"]
+            }
+        }
+    }
+]

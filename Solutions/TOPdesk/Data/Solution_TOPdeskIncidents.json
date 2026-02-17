@@ -3,8 +3,10 @@
     "Author": "Jasper Minnaert & Koos Goossens - mdr@wortell.nl",
     "Logo": "<img src=\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/TOPdesk.svg\" width=\"75px\" height=\"75px\">",
     "Description": "[TOPdesk ITSM-software](https://www.topdesk.com/en/itsm-software/) helps busy service teams handle incoming requests, automatically assign tasks to the right people, and see who's doing what - so you can stay ahead instead of just keeping up.\n\n**Underlying Microsoft Technologies used:**\nThis solution takes a dependency on the following technologies, and some of these dependencies either may be in [Preview](https://azure.microsoft.com/support/legal/preview-supplemental-terms/) state or might result in additional ingestion or operational costs\n\n a. [Codeless Connector Framework](https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector)",
-    "Data Connectors": [],
-    "BasePath": "C:\\GitHub\\Azure-Sentinel",
+    "Data Connectors": [
+        "Data Connectors/TOPdeskIncidents_ccf/TOPdeskIncidents_connectorDefinition.json"
+    ],
+    "BasePath": "C:\\GitHub\\Azure-Sentinel\\Solutions\\TOPdesk",
     "Version": "3.0.0",
     "Metadata": "SolutionMetadata.json",
     "TemplateSpec": true,

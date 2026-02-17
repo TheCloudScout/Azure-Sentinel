@@ -1,0 +1,40 @@
+{
+    "name": "TOPdeskIncidents_CL",
+    "type": "Microsoft.OperationalInsights/workspaces/tables",
+    "apiVersion": "2022-10-01",
+    "properties": {
+        "schema": {
+            "name": "TOPdeskIncidents_CL",
+            "columns": [
+                { "name": "TimeGenerated", "type": "datetime" },
+                { "name": "SourceSystem", "type": "string" },
+                { "name": "IncidentId", "type": "string" },
+                { "name": "IncidentNumber", "type": "string" },
+                { "name": "Title", "type": "string" },
+                { "name": "Description", "type": "string" },
+                { "name": "Status", "type": "string" },
+                { "name": "Priority", "type": "string" },
+                { "name": "Impact", "type": "string" },
+                { "name": "Urgency", "type": "string" },
+                { "name": "Category", "type": "string" },
+                { "name": "Subcategory", "type": "string" },
+                { "name": "CallType", "type": "string" },
+                { "name": "CallerId", "type": "string" },
+                { "name": "CallerName", "type": "string" },
+                { "name": "OperatorId", "type": "string" },
+                { "name": "OperatorName", "type": "string" },
+                { "name": "OperatorGroupId", "type": "string" },
+                { "name": "OperatorGroupName", "type": "string" },
+                { "name": "CreatedDateTime", "type": "datetime" },
+                { "name": "UpdatedDateTime", "type": "datetime" },
+                { "name": "ClosedDateTime", "type": "datetime" },
+                { "name": "TargetDateTime", "type": "datetime" },
+                { "name": "Archived", "type": "bool" },
+                { "name": "IsPartial", "type": "bool" },
+                { "name": "IsFirstLine", "type": "bool" },
+                { "name": "IsSecondLine", "type": "bool" },
+                { "name": "RawEvent", "type": "dynamic" }
+            ]
+        }
+    }
+}

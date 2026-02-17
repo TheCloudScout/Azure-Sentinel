@@ -27,6 +27,20 @@
       "metadata": {
         "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
       }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "resource group name where Microsoft Sentinel is setup"
+      }
+    },
+    "subscription": {
+      "type": "string",
+      "defaultValue": "[last(split(subscription().id, '/'))]",
+      "metadata": {
+        "description": "subscription id where Microsoft Sentinel is setup"
+      }
     }
   },
   "variables": {
@@ -36,52 +50,684 @@
     "_solutionVersion": "3.0.0",
     "solutionId": "azuresentinel.azure-sentinel-solution-topdeskincidents",
     "_solutionId": "[variables('solutionId')]",
-    "_solutioncontentProductId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+    "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
+    "dataConnectorCCPVersion": "1.0.0",
+    "_dataConnectorContentIdConnectorDefinition1": "TOPdeskIncidentsDefinition",
+    "dataConnectorTemplateNameConnectorDefinition1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition1')))]",
+    "_dataConnectorContentIdConnections1": "TOPdeskIncidentsDefinitionConnections",
+    "dataConnectorTemplateNameConnections1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections1')))]",
+    "dataCollectionEndpointId1": "[concat('/subscriptions/',parameters('subscription'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
+    "blanks": "[replace('b', 'b', '')]",
+    "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]"
   },
-  "resources": {
-    "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
-    "apiVersion": "2025-07-01-preview",
-    "location": "[parameters('workspace-location')]",
-    "properties": {
-      "version": "3.0.0",
-      "kind": "Solution",
-      "contentSchemaVersion": "3.0.0",
-      "displayName": "TOPdesk",
-      "publisherDisplayName": "Wortell Enterprise Security",
-      "descriptionHtml": "<p><strong>Note:</strong> Please refer to the following before installing the solution:</p>\n<p>• Review the solution <a href=\"https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/TOPdesk/ReleaseNotes.md\">Release Notes</a></p>\n<p>• There may be <a href=\"https://aka.ms/sentinelsolutionsknownissues\">known issues</a> pertaining to this Solution, please refer to them before installing.</p>\n<p><a href=\"https://www.topdesk.com/en/itsm-software/\">TOPdesk ITSM-software</a> helps busy service teams handle incoming requests, automatically assign tasks to the right people, and see who's doing what - so you can stay ahead instead of just keeping up.</p>\n<p><strong>Underlying Microsoft Technologies used:</strong>\nThis solution takes a dependency on the following technologies, and some of these dependencies either may be in <a href=\"https://azure.microsoft.com/support/legal/preview-supplemental-terms/\">Preview</a> state or might result in additional ingestion or operational costs</p>\n<ol type=\"a\">\n<li><a href=\"https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector\">Codeless Connector Framework</a></li>\n</ol>\n<p><a href=\"https://aka.ms/azuresentinel\">Learn more about Microsoft Sentinel</a> | <a href=\"https://aka.ms/azuresentinelsolutionsdoc\">Learn more about Solutions</a></p>\n",
-      "contentKind": "Solution",
-      "contentProductId": "[variables('_solutioncontentProductId')]",
-      "id": "[variables('_solutioncontentProductId')]",
-      "icon": "<img src=\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/TOPdesk.svg\" width=\"75px\" height=\"75px\">",
-      "contentId": "[variables('_solutionId')]",
-      "parentId": "[variables('_solutionId')]",
-      "source": {
-        "kind": "Solution",
-        "name": "TOPdesk",
-        "sourceId": "[variables('_solutionId')]"
-      },
-      "author": {
-        "name": "Jasper Minnaert & Koos Goossens",
-        "email": "[variables('_email')]"
-      },
-      "support": {
-        "name": "Wortell Enterprise Security",
-        "email": "mdr@wortell.nl",
-        "tier": "Partner",
-        "link": "https://www.wortell.nl"
-      },
-      "firstPublishDate": "2026-02-10",
-      "lastPublishDate": "2026-02-10",
-      "providers": [
-        "TOPdesk"
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnectorDefinition1'), variables('dataConnectorCCPVersion'))]",
+      "location": "[parameters('workspace-location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
       ],
-      "categories": {
-        "domains": [
-          "Application"
-        ]
+      "properties": {
+        "contentId": "[variables('_dataConnectorContentIdConnectorDefinition1')]",
+        "displayName": "TOPdesk",
+        "contentKind": "DataConnector",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('dataConnectorCCPVersion')]",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition1'))]",
+              "apiVersion": "2022-09-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+              "location": "[parameters('workspace-location')]",
+              "kind": "Customizable",
+              "properties": {
+                "connectorUiConfig": {
+                  "id": "TOPdeskIncidentsDefinition",
+                  "title": "TOPdesk",
+                  "publisher": "Wortell Enterprise Security",
+                  "descriptionMarkdown": "Ingest TOPdesk incidents using the Codeless Connector Framework (RestApiPoller).",
+                  "graphQueriesTableName": "TOPdeskIncidents_CL",
+                  "graphQueries": [
+                    {
+                      "metricName": "Events received",
+                      "legend": "TOPdesk incidents",
+                      "baseQuery": "{{graphQueriesTableName}}"
+                    }
+                  ],
+                  "sampleQueries": [
+                    {
+                      "description": "Latest TOPdesk incidents",
+                      "query": "{{graphQueriesTableName}}\n| sort by TimeGenerated desc\n| take 50"
+                    }
+                  ],
+                  "dataTypes": [
+                    {
+                      "name": "{{graphQueriesTableName}}",
+                      "lastDataReceivedQuery": "{{graphQueriesTableName}}\n| summarize Time=max(TimeGenerated)\n| where isnotempty(Time)"
+                    }
+                  ],
+                  "connectivityCriteria": [
+                    {
+                      "type": "HasDataConnectors",
+                      "value": null
+                    }
+                  ],
+                  "permissions": {
+                    "resourceProvider": [
+                      {
+                        "provider": "Microsoft.OperationalInsights/workspaces",
+                        "providerDisplayName": "Workspace",
+                        "scope": "Workspace",
+                        "permissionsDisplayText": "Read and Write permissions are required.",
+                        "requiredPermissions": {
+                          "read": true,
+                          "write": true,
+                          "delete": true
+                        }
+                      }
+                    ],
+                    "customs": [
+                      {
+                        "name": "TOPdesk API credentials",
+                        "description": "Operator username + application password"
+                      }
+                    ]
+                  },
+                  "instructionSteps": [
+                    {
+                      "title": "Connect TOPdesk",
+                      "description": "Provide the TOPdesk base URL and credentials.",
+                      "instructions": [
+                        {
+                          "type": "Textbox",
+                          "parameters": {
+                            "name": "topdeskBaseUrl",
+                            "label": "TOPdesk base URL (host only)",
+                            "type": "text"
+                          }
+                        },
+                        {
+                          "type": "Textbox",
+                          "parameters": {
+                            "name": "username",
+                            "label": "Username",
+                            "type": "text"
+                          }
+                        },
+                        {
+                          "type": "Textbox",
+                          "parameters": {
+                            "name": "password",
+                            "label": "Application password",
+                            "type": "securestring"
+                          }
+                        },
+                        {
+                          "parameters": {
+                            "label": "toggle",
+                            "name": "toggle"
+                          },
+                          "type": "ConnectionToggleButton"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition1')))]",
+              "apiVersion": "2022-01-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition1'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition1')]",
+                "kind": "DataConnector",
+                "version": "[variables('dataConnectorCCPVersion')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "Jasper Minnaert & Koos Goossens",
+                  "email": "[variables('_email')]"
+                },
+                "support": {
+                  "name": "Wortell Enterprise Security",
+                  "email": "mdr@wortell.nl",
+                  "tier": "Partner",
+                  "link": "https://www.wortell.nl"
+                },
+                "dependencies": {
+                  "criteria": [
+                    {
+                      "version": "[variables('dataConnectorCCPVersion')]",
+                      "contentId": "[variables('_dataConnectorContentIdConnections1')]",
+                      "kind": "ResourcesDataConnector"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "TOPdesk-DCR",
+              "apiVersion": "2022-06-01",
+              "type": "Microsoft.Insights/dataCollectionRules",
+              "location": "[parameters('workspace-location')]",
+              "kind": "[variables('blanks')]",
+              "properties": {
+                "dataCollectionEndpointId": "[variables('dataCollectionEndpointId1')]",
+                "streamDeclarations": {
+                  "Custom-TOPdeskIncidents_CL": {
+                    "columns": [
+                      {
+                        "name": "source",
+                        "type": "dynamic"
+                      }
+                    ]
+                  }
+                },
+                "destinations": {
+                  "logAnalytics": [
+                    {
+                      "workspaceResourceId": "[variables('workspaceResourceId')]",
+                      "name": "clv2ws1"
+                    }
+                  ]
+                },
+                "dataFlows": [
+                  {
+                    "streams": [
+                      "Custom-TOPdeskIncidents_CL"
+                    ],
+                    "destinations": [
+                      "clv2ws1"
+                    ],
+                    "transformKql": "source\n| extend RawEvent = parse_json(tostring(source))\n| extend SourceSystem = 'TOPdesk'\n| extend priorityObj = parse_json(tostring(RawEvent['priority']))\n| extend impactObj = parse_json(tostring(RawEvent['impact']))\n| extend urgencyObj = parse_json(tostring(RawEvent['urgency']))\n| extend categoryObj = parse_json(tostring(RawEvent['category']))\n| extend subcategoryObj = parse_json(tostring(RawEvent['subcategory']))\n| extend callTypeObj = parse_json(tostring(RawEvent['callType']))\n| extend callerObj = parse_json(tostring(RawEvent['caller']))\n| extend operatorObj = parse_json(tostring(RawEvent['operator']))\n| extend operatorGroupObj = parse_json(tostring(RawEvent['operatorGroup']))\n| extend IncidentId = tostring(RawEvent['id'])\n| extend IncidentNumber = tostring(RawEvent['number'])\n| extend Title = tostring(RawEvent['briefDescription'])\n| extend Description = tostring(RawEvent['request'])\n| extend Status = tostring(RawEvent['status'])\n| extend Priority = tostring(priorityObj['name'])\n| extend Impact = tostring(impactObj['name'])\n| extend Urgency = tostring(urgencyObj['name'])\n| extend Category = tostring(categoryObj['name'])\n| extend Subcategory = tostring(subcategoryObj['name'])\n| extend CallType = tostring(callTypeObj['name'])\n| extend CallerId = tostring(callerObj['id'])\n| extend CallerName = tostring(callerObj['name'])\n| extend OperatorId = tostring(operatorObj['id'])\n| extend OperatorName = tostring(operatorObj['name'])\n| extend OperatorGroupId = tostring(operatorGroupObj['id'])\n| extend OperatorGroupName = tostring(operatorGroupObj['name'])\n| extend CreatedDateTime = todatetime(RawEvent['creationDate'])\n| extend UpdatedDateTime = todatetime(RawEvent['modificationDate'])\n| extend ClosedDateTime = todatetime(RawEvent['closedDate'])\n| extend TargetDateTime = todatetime(RawEvent['targetDate'])\n| extend Archived = tobool(RawEvent['archived'])\n| extend IsPartial = tobool(RawEvent['partial'])\n| extend IsFirstLine = tobool(RawEvent['firstLine'])\n| extend IsSecondLine = tobool(RawEvent['secondLine'])\n| extend TimeGenerated = todatetime(RawEvent['modificationDate'])\n| project TimeGenerated, SourceSystem, IncidentId, IncidentNumber, Title, Description, Status, Priority, Impact, Urgency, Category, Subcategory, CallType, CallerId, CallerName, OperatorId, OperatorName, OperatorGroupId, OperatorGroupName, CreatedDateTime, UpdatedDateTime, ClosedDateTime, TargetDateTime, Archived, IsPartial, IsFirstLine, IsSecondLine, RawEvent",
+                    "outputStream": "Custom-TOPdeskIncidents_CL"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "TOPdeskIncidents_CL",
+              "apiVersion": "2022-10-01",
+              "type": "Microsoft.OperationalInsights/workspaces/tables",
+              "location": "[parameters('workspace-location')]",
+              "kind": null,
+              "properties": {
+                "schema": {
+                  "name": "TOPdeskIncidents_CL",
+                  "columns": [
+                    {
+                      "name": "TimeGenerated",
+                      "type": "datetime"
+                    },
+                    {
+                      "name": "SourceSystem",
+                      "type": "string"
+                    },
+                    {
+                      "name": "IncidentId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "IncidentNumber",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Title",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Description",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Status",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Priority",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Impact",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Urgency",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Category",
+                      "type": "string"
+                    },
+                    {
+                      "name": "Subcategory",
+                      "type": "string"
+                    },
+                    {
+                      "name": "CallType",
+                      "type": "string"
+                    },
+                    {
+                      "name": "CallerId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "CallerName",
+                      "type": "string"
+                    },
+                    {
+                      "name": "OperatorId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "OperatorName",
+                      "type": "string"
+                    },
+                    {
+                      "name": "OperatorGroupId",
+                      "type": "string"
+                    },
+                    {
+                      "name": "OperatorGroupName",
+                      "type": "string"
+                    },
+                    {
+                      "name": "CreatedDateTime",
+                      "type": "datetime"
+                    },
+                    {
+                      "name": "UpdatedDateTime",
+                      "type": "datetime"
+                    },
+                    {
+                      "name": "ClosedDateTime",
+                      "type": "datetime"
+                    },
+                    {
+                      "name": "TargetDateTime",
+                      "type": "datetime"
+                    },
+                    {
+                      "name": "Archived",
+                      "type": "bool"
+                    },
+                    {
+                      "name": "IsPartial",
+                      "type": "bool"
+                    },
+                    {
+                      "name": "IsFirstLine",
+                      "type": "bool"
+                    },
+                    {
+                      "name": "IsSecondLine",
+                      "type": "bool"
+                    },
+                    {
+                      "name": "RawEvent",
+                      "type": "dynamic"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(take(variables('_solutionId'), 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition1'),'-', variables('dataConnectorCCPVersion'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('dataConnectorCCPVersion')]"
       }
     },
-    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]"
-  },
+    {
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition1'))]",
+      "apiVersion": "2022-09-01-preview",
+      "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+      "location": "[parameters('workspace-location')]",
+      "kind": "Customizable",
+      "properties": {
+        "connectorUiConfig": {
+          "id": "TOPdeskIncidentsDefinition",
+          "title": "TOPdesk",
+          "publisher": "Wortell Enterprise Security",
+          "descriptionMarkdown": "Ingest TOPdesk incidents using the Codeless Connector Framework (RestApiPoller).",
+          "graphQueriesTableName": "TOPdeskIncidents_CL",
+          "graphQueries": [
+            {
+              "metricName": "Events received",
+              "legend": "TOPdesk incidents",
+              "baseQuery": "{{graphQueriesTableName}}"
+            }
+          ],
+          "sampleQueries": [
+            {
+              "description": "Latest TOPdesk incidents",
+              "query": "{{graphQueriesTableName}}\n| sort by TimeGenerated desc\n| take 50"
+            }
+          ],
+          "dataTypes": [
+            {
+              "name": "{{graphQueriesTableName}}",
+              "lastDataReceivedQuery": "{{graphQueriesTableName}}\n| summarize Time=max(TimeGenerated)\n| where isnotempty(Time)"
+            }
+          ],
+          "connectivityCriteria": [
+            {
+              "type": "HasDataConnectors",
+              "value": null
+            }
+          ],
+          "permissions": {
+            "resourceProvider": [
+              {
+                "provider": "Microsoft.OperationalInsights/workspaces",
+                "providerDisplayName": "Workspace",
+                "scope": "Workspace",
+                "permissionsDisplayText": "Read and Write permissions are required.",
+                "requiredPermissions": {
+                  "read": true,
+                  "write": true,
+                  "delete": true
+                }
+              }
+            ],
+            "customs": [
+              {
+                "name": "TOPdesk API credentials",
+                "description": "Operator username + application password"
+              }
+            ]
+          },
+          "instructionSteps": [
+            {
+              "title": "Connect TOPdesk",
+              "description": "Provide the TOPdesk base URL and credentials.",
+              "instructions": [
+                {
+                  "type": "Textbox",
+                  "parameters": {
+                    "name": "topdeskBaseUrl",
+                    "label": "TOPdesk base URL (host only)",
+                    "type": "text"
+                  }
+                },
+                {
+                  "type": "Textbox",
+                  "parameters": {
+                    "name": "username",
+                    "label": "Username",
+                    "type": "text"
+                  }
+                },
+                {
+                  "type": "Textbox",
+                  "parameters": {
+                    "name": "password",
+                    "label": "Application password",
+                    "type": "securestring"
+                  }
+                },
+                {
+                  "parameters": {
+                    "label": "toggle",
+                    "name": "toggle"
+                  },
+                  "type": "ConnectionToggleButton"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition1')))]",
+      "apiVersion": "2022-01-01-preview",
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "properties": {
+        "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition1'))]",
+        "contentId": "[variables('_dataConnectorContentIdConnectorDefinition1')]",
+        "kind": "DataConnector",
+        "version": "[variables('dataConnectorCCPVersion')]",
+        "source": {
+          "sourceId": "[variables('_solutionId')]",
+          "name": "[variables('_solutionName')]",
+          "kind": "Solution"
+        },
+        "author": {
+          "name": "Jasper Minnaert & Koos Goossens",
+          "email": "[variables('_email')]"
+        },
+        "support": {
+          "name": "Wortell Enterprise Security",
+          "email": "mdr@wortell.nl",
+          "tier": "Partner",
+          "link": "https://www.wortell.nl"
+        },
+        "dependencies": {
+          "criteria": [
+            {
+              "version": "[variables('dataConnectorCCPVersion')]",
+              "contentId": "[variables('_dataConnectorContentIdConnections1')]",
+              "kind": "ResourcesDataConnector"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections1'), variables('dataConnectorCCPVersion'))]",
+      "location": "[parameters('workspace-location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+      ],
+      "properties": {
+        "contentId": "[variables('_dataConnectorContentIdConnections1')]",
+        "displayName": "TOPdesk",
+        "contentKind": "ResourcesDataConnector",
+        "mainTemplate": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "[variables('dataConnectorCCPVersion')]",
+          "parameters": {
+            "guidValue": {
+              "defaultValue": "[[newGuid()]",
+              "type": "securestring"
+            },
+            "innerWorkspace": {
+              "defaultValue": "[parameters('workspace')]",
+              "type": "securestring"
+            },
+            "connectorDefinitionName": {
+              "defaultValue": "TOPdeskIncidentsDefinition",
+              "type": "securestring",
+              "minLength": 1
+            },
+            "workspace": {
+              "defaultValue": "[parameters('workspace')]",
+              "type": "securestring"
+            },
+            "dcrConfig": {
+              "defaultValue": {
+                "dataCollectionEndpoint": "data collection Endpoint",
+                "dataCollectionRuleImmutableId": "data collection rule immutableId"
+              },
+              "type": "object"
+            },
+            "topdeskBaseUrl": {
+              "defaultValue": "topdeskBaseUrl",
+              "type": "securestring",
+              "minLength": 1
+            },
+            "username": {
+              "defaultValue": "username",
+              "type": "securestring",
+              "minLength": 1
+            },
+            "password": {
+              "defaultValue": "password",
+              "type": "securestring",
+              "minLength": 1
+            }
+          },
+          "variables": {
+            "_dataConnectorContentIdConnections1": "[variables('_dataConnectorContentIdConnections1')]"
+          },
+          "resources": [
+            {
+              "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections1')))]",
+              "apiVersion": "2022-01-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+              "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections1'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnections1')]",
+                "kind": "ResourcesDataConnector",
+                "version": "[variables('dataConnectorCCPVersion')]",
+                "source": {
+                  "sourceId": "[variables('_solutionId')]",
+                  "name": "[variables('_solutionName')]",
+                  "kind": "Solution"
+                },
+                "author": {
+                  "name": "Jasper Minnaert & Koos Goossens",
+                  "email": "[variables('_email')]"
+                },
+                "support": {
+                  "name": "Wortell Enterprise Security",
+                  "email": "mdr@wortell.nl",
+                  "tier": "Partner",
+                  "link": "https://www.wortell.nl"
+                }
+              }
+            },
+            {
+              "name": "[[concat(parameters('innerWorkspace'),'/Microsoft.SecurityInsights/', 'TOPdeskIncidentsPoller', parameters('guidValue'))]",
+              "apiVersion": "2023-02-01-preview",
+              "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+              "location": "[parameters('workspace-location')]",
+              "kind": "RestApiPoller",
+              "properties": {
+                "connectorDefinitionName": "TOPdeskIncidentsDefinition",
+                "dataType": "TOPdeskIncidents_CL",
+                "dcrConfig": {
+                  "streamName": "Custom-TOPdeskIncidents_CL",
+                  "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                  "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]"
+                },
+                "auth": {
+                  "type": "Basic",
+                  "UserName": "[[parameters('username')]",
+                  "Password": "[[parameters('password')]"
+                },
+                "request": {
+                  "apiEndpoint": "[[concat('https://', parameters('topdeskBaseUrl'), '/tas/api/incidents')]",
+                  "httpMethod": "GET",
+                  "queryWindowInMin": 5,
+                  "timeoutInSeconds": 60,
+                  "retryCount": 3,
+                  "rateLimitQPS": 10,
+                  "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                  "startTimeAttributeName": "modification_date_start",
+                  "endTimeAttributeName": "modification_date_end",
+                  "headers": {
+                    "Accept": "application/json"
+                  },
+                  "queryParameters": {
+                    "page_size": 200
+                  }
+                },
+                "paging": {
+                  "pagingType": "Offset",
+                  "offsetParaName": "start",
+                  "pageSize": 200,
+                  "pageSizeParameterName": "page_size"
+                },
+                "response": {
+                  "format": "json",
+                  "eventsJsonPaths": [
+                    "$"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(take(variables('_solutionId'), 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections1'),'-', variables('dataConnectorCCPVersion'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('dataConnectorCCPVersion')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+      "apiVersion": "2023-04-01-preview",
+      "location": "[parameters('workspace-location')]",
+      "properties": {
+        "version": "3.0.0",
+        "kind": "Solution",
+        "contentSchemaVersion": "3.0.0",
+        "displayName": "TOPdesk",
+        "publisherDisplayName": "Wortell Enterprise Security",
+        "descriptionHtml": "<p><strong>Note:</strong> Please refer to the following before installing the solution:</p>\n<p>\u2022 Review the solution <a href=\"https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/TOPdesk/ReleaseNotes.md\">Release Notes</a></p>\n<p>\u2022 There may be <a href=\"https://aka.ms/sentinelsolutionsknownissues\">known issues</a> pertaining to this Solution, please refer to them before installing.</p>\n<p><a href=\"https://www.topdesk.com/en/itsm-software/\">TOPdesk ITSM-software</a> helps busy service teams handle incoming requests, automatically assign tasks to the right people, and see who's doing what - so you can stay ahead instead of just keeping up.</p>\n<p><strong>Underlying Microsoft Technologies used:</strong>\nThis solution takes a dependency on the following technologies, and some of these dependencies either may be in <a href=\"https://azure.microsoft.com/support/legal/preview-supplemental-terms/\">Preview</a> state or might result in additional ingestion or operational costs</p>\n<ol type=\"a\">\n<li><a href=\"https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector\">Codeless Connector Framework</a></li>\n</ol>\n<p><strong>Data Connectors:</strong> 1</p>\n<p><a href=\"https://aka.ms/azuresentinel\">Learn more about Microsoft Sentinel</a> | <a href=\"https://aka.ms/azuresentinelsolutionsdoc\">Learn more about Solutions</a></p>\n",
+        "contentKind": "Solution",
+        "contentProductId": "[variables('_solutioncontentProductId')]",
+        "id": "[variables('_solutioncontentProductId')]",
+        "icon": "<img src=\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/TOPdesk.svg\" width=\"75px\" height=\"75px\">",
+        "contentId": "[variables('_solutionId')]",
+        "parentId": "[variables('_solutionId')]",
+        "source": {
+          "kind": "Solution",
+          "name": "TOPdesk",
+          "sourceId": "[variables('_solutionId')]"
+        },
+        "author": {
+          "name": "Jasper Minnaert & Koos Goossens",
+          "email": "[variables('_email')]"
+        },
+        "support": {
+          "name": "Wortell Enterprise Security",
+          "email": "mdr@wortell.nl",
+          "tier": "Partner",
+          "link": "https://www.wortell.nl"
+        },
+        "dependencies": {
+          "operator": "AND",
+          "criteria": [
+            {
+              "kind": "DataConnector",
+              "contentId": "[variables('_dataConnectorContentIdConnections1')]",
+              "version": "[variables('dataConnectorCCPVersion')]"
+            }
+          ]
+        },
+        "providers": [
+          "TOPdesk"
+        ],
+        "categories": {
+          "domains": [
+            "Application"
+          ]
+        }
+      },
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]"
+    }
+  ],
   "outputs": {}
 }
