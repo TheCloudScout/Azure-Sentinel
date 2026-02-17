@@ -92,7 +92,21 @@ cd C:\GitHub\Azure-Sentinel\Solutions\TOPdesk\Package
 Test-AzTemplate
 ```
 
-> **Note:** You can ignore ARM-TTK errors for `contentProductId` / `id` related to *"IDs should be derived from ResourceIds"* — these are known false positives for solution packages.
+> **Note:** The test **"IDs Should Be Derived From ResourceIDs"** will fail — this is expected.
+> The packaging tool generates `concat()`-based expressions for `contentProductId`, `id`, and
+> `dataCollectionRuleImmutableId` that the ARM-TTK cannot resolve to proper `resourceId()` calls.
+> The reference VersasecCMS connector has the same failures (8 errors vs 7 for TOPdesk).
+> These are **known false positives** accepted by the Sentinel repo maintainers during PR review.
+>
+> **Expected result: 48/49 tests passed, 1 failed** (`IDs Should Be Derived From ResourceIDs`).
+>
+> Flagged properties and why they are false positives:
+>
+> | Property | Count | Reason |
+> |---|---|---|
+> | `contentProductId` | 3 | Solution product identifier, not an Azure resource ID |
+> | `id` | 3 | Solution content ID, not an Azure resource ID |
+> | `dataCollectionRuleImmutableId` | 1 | Escaped `[[parameters(...)` in nested template — ARM-TTK cannot parse double-bracket expressions |
 
 #### UI validation
 

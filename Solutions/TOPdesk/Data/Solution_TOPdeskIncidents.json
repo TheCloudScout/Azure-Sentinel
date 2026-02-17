@@ -6,7 +6,7 @@
     "Data Connectors": [
         "Data Connectors/TOPdeskIncidents_ccf/TOPdeskIncidents_connectorDefinition.json"
     ],
-    "BasePath": "C:\\GitHub\\Azure-Sentinel\\Solutions\\TOPdesk",
+    "BasePath": "C:\\vscode\\Azure-Sentinel\\Solutions\\TOPdesk",
     "Version": "3.0.0",
     "Metadata": "SolutionMetadata.json",
     "TemplateSpec": true,

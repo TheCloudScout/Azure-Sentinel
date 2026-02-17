@@ -56,9 +56,11 @@
     "dataConnectorTemplateNameConnectorDefinition1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition1')))]",
     "_dataConnectorContentIdConnections1": "TOPdeskIncidentsDefinitionConnections",
     "dataConnectorTemplateNameConnections1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections1')))]",
-    "dataCollectionEndpointId1": "[concat('/subscriptions/',parameters('subscription'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
+    "dataCollectionEndpointId1": "[resourceId(parameters('subscription'), parameters('resourceGroupName'), 'Microsoft.Insights/dataCollectionEndpoints', parameters('workspace'))]",
     "blanks": "[replace('b', 'b', '')]",
-    "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]"
+    "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
+    "_contentProductIdDC1": "[concat(take(variables('_solutionId'), 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition1'),'-', variables('dataConnectorCCPVersion'))))]",
+    "_contentProductIdRDC1": "[concat(take(variables('_solutionId'), 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections1'),'-', variables('dataConnectorCCPVersion'))))]"
   },
   "resources": [
     {
@@ -113,8 +115,7 @@
                   ],
                   "connectivityCriteria": [
                     {
-                      "type": "HasDataConnectors",
-                      "value": null
+                      "type": "HasDataConnectors"
                     }
                   ],
                   "permissions": {
@@ -148,7 +149,10 @@
                           "parameters": {
                             "name": "topdeskBaseUrl",
                             "label": "TOPdesk base URL (host only)",
-                            "type": "text"
+                            "type": "text",
+                            "validations": {
+                              "required": true
+                            }
                           }
                         },
                         {
@@ -156,7 +160,10 @@
                           "parameters": {
                             "name": "username",
                             "label": "Username",
-                            "type": "text"
+                            "type": "text",
+                            "validations": {
+                              "required": true
+                            }
                           }
                         },
                         {
@@ -164,7 +171,10 @@
                           "parameters": {
                             "name": "password",
                             "label": "Application password",
-                            "type": "securestring"
+                            "type": "securestring",
+                            "validations": {
+                              "required": true
+                            }
                           }
                         },
                         {
@@ -386,7 +396,7 @@
         "packageKind": "Solution",
         "packageVersion": "[variables('_solutionVersion')]",
         "packageName": "[variables('_solutionName')]",
-        "contentProductId": "[concat(take(variables('_solutionId'), 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition1'),'-', variables('dataConnectorCCPVersion'))))]",
+        "contentProductId": "[variables('_contentProductIdDC1')]",
         "packageId": "[variables('_solutionId')]",
         "contentSchemaVersion": "3.0.0",
         "version": "[variables('dataConnectorCCPVersion')]"
@@ -426,8 +436,7 @@
           ],
           "connectivityCriteria": [
             {
-              "type": "HasDataConnectors",
-              "value": null
+              "type": "HasDataConnectors"
             }
           ],
           "permissions": {
@@ -461,7 +470,10 @@
                   "parameters": {
                     "name": "topdeskBaseUrl",
                     "label": "TOPdesk base URL (host only)",
-                    "type": "text"
+                    "type": "text",
+                    "validations": {
+                      "required": true
+                    }
                   }
                 },
                 {
@@ -469,7 +481,10 @@
                   "parameters": {
                     "name": "username",
                     "label": "Username",
-                    "type": "text"
+                    "type": "text",
+                    "validations": {
+                      "required": true
+                    }
                   }
                 },
                 {
@@ -477,7 +492,10 @@
                   "parameters": {
                     "name": "password",
                     "label": "Application password",
-                    "type": "securestring"
+                    "type": "securestring",
+                    "validations": {
+                      "required": true
+                    }
                   }
                 },
                 {
@@ -553,7 +571,7 @@
               "type": "securestring"
             },
             "connectorDefinitionName": {
-              "defaultValue": "TOPdeskIncidentsDefinition",
+              "defaultValue": "TOPdesk",
               "type": "securestring",
               "minLength": 1
             },
@@ -669,7 +687,7 @@
         "packageKind": "Solution",
         "packageVersion": "[variables('_solutionVersion')]",
         "packageName": "[variables('_solutionName')]",
-        "contentProductId": "[concat(take(variables('_solutionId'), 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections1'),'-', variables('dataConnectorCCPVersion'))))]",
+        "contentProductId": "[variables('_contentProductIdRDC1')]",
         "packageId": "[variables('_solutionId')]",
         "contentSchemaVersion": "3.0.0",
         "version": "[variables('dataConnectorCCPVersion')]"
@@ -685,7 +703,7 @@
         "contentSchemaVersion": "3.0.0",
         "displayName": "TOPdesk",
         "publisherDisplayName": "Wortell Enterprise Security",
-        "descriptionHtml": "<p><strong>Note:</strong> Please refer to the following before installing the solution:</p>\n<p>\u2022 Review the solution <a href=\"https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/TOPdesk/ReleaseNotes.md\">Release Notes</a></p>\n<p>\u2022 There may be <a href=\"https://aka.ms/sentinelsolutionsknownissues\">known issues</a> pertaining to this Solution, please refer to them before installing.</p>\n<p><a href=\"https://www.topdesk.com/en/itsm-software/\">TOPdesk ITSM-software</a> helps busy service teams handle incoming requests, automatically assign tasks to the right people, and see who's doing what - so you can stay ahead instead of just keeping up.</p>\n<p><strong>Underlying Microsoft Technologies used:</strong>\nThis solution takes a dependency on the following technologies, and some of these dependencies either may be in <a href=\"https://azure.microsoft.com/support/legal/preview-supplemental-terms/\">Preview</a> state or might result in additional ingestion or operational costs</p>\n<ol type=\"a\">\n<li><a href=\"https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector\">Codeless Connector Framework</a></li>\n</ol>\n<p><strong>Data Connectors:</strong> 1</p>\n<p><a href=\"https://aka.ms/azuresentinel\">Learn more about Microsoft Sentinel</a> | <a href=\"https://aka.ms/azuresentinelsolutionsdoc\">Learn more about Solutions</a></p>\n",
+        "descriptionHtml": "<p><strong>Note:</strong> Please refer to the following before installing the solution:</p>\n<p>• Review the solution <a href=\"https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/TOPdesk/ReleaseNotes.md\">Release Notes</a></p>\n<p>• There may be <a href=\"https://aka.ms/sentinelsolutionsknownissues\">known issues</a> pertaining to this Solution, please refer to them before installing.</p>\n<p><a href=\"https://www.topdesk.com/en/itsm-software/\">TOPdesk ITSM-software</a> helps busy service teams handle incoming requests, automatically assign tasks to the right people, and see who's doing what - so you can stay ahead instead of just keeping up.</p>\n<p><strong>Underlying Microsoft Technologies used:</strong>\nThis solution takes a dependency on the following technologies, and some of these dependencies either may be in <a href=\"https://azure.microsoft.com/support/legal/preview-supplemental-terms/\">Preview</a> state or might result in additional ingestion or operational costs</p>\n<ol type=\"a\">\n<li><a href=\"https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector\">Codeless Connector Framework</a></li>\n</ol>\n<p><strong>Data Connectors:</strong> 1</p>\n<p><a href=\"https://aka.ms/azuresentinel\">Learn more about Microsoft Sentinel</a> | <a href=\"https://aka.ms/azuresentinelsolutionsdoc\">Learn more about Solutions</a></p>\n",
         "contentKind": "Solution",
         "contentProductId": "[variables('_solutioncontentProductId')]",
         "id": "[variables('_solutioncontentProductId')]",
@@ -717,6 +735,8 @@
             }
           ]
         },
+        "firstPublishDate": "2026-02-10",
+        "lastPublishDate": "2026-02-10",
         "providers": [
           "TOPdesk"
         ],
