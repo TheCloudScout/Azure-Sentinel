@@ -235,7 +235,295 @@
                   "Custom-TOPdeskIncidents_CL": {
                     "columns": [
                       {
-                        "name": "source",
+                        "name": "id",
+                        "type": "string"
+                      },
+                      {
+                        "name": "status",
+                        "type": "string"
+                      },
+                      {
+                        "name": "number",
+                        "type": "string"
+                      },
+                      {
+                        "name": "request",
+                        "type": "string"
+                      },
+                      {
+                        "name": "requests",
+                        "type": "string"
+                      },
+                      {
+                        "name": "action",
+                        "type": "string"
+                      },
+                      {
+                        "name": "attachments",
+                        "type": "string"
+                      },
+                      {
+                        "name": "caller",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "callerBranch",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "callerLocation",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "branchExtraFieldA",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "branchExtraFieldB",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "briefDescription",
+                        "type": "string"
+                      },
+                      {
+                        "name": "externalNumber",
+                        "type": "string"
+                      },
+                      {
+                        "name": "category",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "subcategory",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "callType",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "entryType",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "object",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "asset",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "branch",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "location",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "impact",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "urgency",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "priority",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "duration",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "actualDuration",
+                        "type": "int"
+                      },
+                      {
+                        "name": "targetDate",
+                        "type": "datetime"
+                      },
+                      {
+                        "name": "sla",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "onHold",
+                        "type": "boolean"
+                      },
+                      {
+                        "name": "onHoldDate",
+                        "type": "datetime"
+                      },
+                      {
+                        "name": "onHoldDuration",
+                        "type": "int"
+                      },
+                      {
+                        "name": "feedbackMessage",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "feedbackRating",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "operator",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "operatorGroup",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "supplier",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "processingStatus",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "responded",
+                        "type": "boolean"
+                      },
+                      {
+                        "name": "responseDate",
+                        "type": "datetime"
+                      },
+                      {
+                        "name": "completed",
+                        "type": "boolean"
+                      },
+                      {
+                        "name": "completedDate",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "closed",
+                        "type": "boolean"
+                      },
+                      {
+                        "name": "closedDate",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "closureCode",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "timeSpent",
+                        "type": "int"
+                      },
+                      {
+                        "name": "timeSpentFirstLine",
+                        "type": "int"
+                      },
+                      {
+                        "name": "timeSpentSecondLine",
+                        "type": "int"
+                      },
+                      {
+                        "name": "timeSpentPartial",
+                        "type": "int"
+                      },
+                      {
+                        "name": "timeSpentLinkedPartials",
+                        "type": "int"
+                      },
+                      {
+                        "name": "timeSpentSecondLineAndPartials",
+                        "type": "int"
+                      },
+                      {
+                        "name": "itemCosts",
+                        "type": "int"
+                      },
+                      {
+                        "name": "objectCosts",
+                        "type": "int"
+                      },
+                      {
+                        "name": "costs",
+                        "type": "int"
+                      },
+                      {
+                        "name": "escalationStatus",
+                        "type": "string"
+                      },
+                      {
+                        "name": "escalationReason",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "escalationOperator",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "callDate",
+                        "type": "datetime"
+                      },
+                      {
+                        "name": "creator",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "creationDate",
+                        "type": "datetime"
+                      },
+                      {
+                        "name": "modifier",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "modificationDate",
+                        "type": "datetime"
+                      },
+                      {
+                        "name": "majorCall",
+                        "type": "boolean"
+                      },
+                      {
+                        "name": "majorCallObject",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "publishToSsd",
+                        "type": "boolean"
+                      },
+                      {
+                        "name": "monitored",
+                        "type": "boolean"
+                      },
+                      {
+                        "name": "expectedTimeSpent",
+                        "type": "int"
+                      },
+                      {
+                        "name": "archivingReason",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "mainIncident",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "optionalFields1",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "optionalFields2",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "externalLinks",
+                        "type": "dynamic"
+                      },
+                      {
+                        "name": "partialIncidents",
                         "type": "dynamic"
                       }
                     ]
@@ -257,7 +545,7 @@
                     "destinations": [
                       "clv2ws1"
                     ],
-                    "transformKql": "source\n| extend RawEvent = parse_json(tostring(source))\n| extend SourceSystem = 'TOPdesk'\n| extend priorityObj = parse_json(tostring(RawEvent['priority']))\n| extend impactObj = parse_json(tostring(RawEvent['impact']))\n| extend urgencyObj = parse_json(tostring(RawEvent['urgency']))\n| extend categoryObj = parse_json(tostring(RawEvent['category']))\n| extend subcategoryObj = parse_json(tostring(RawEvent['subcategory']))\n| extend callTypeObj = parse_json(tostring(RawEvent['callType']))\n| extend callerObj = parse_json(tostring(RawEvent['caller']))\n| extend operatorObj = parse_json(tostring(RawEvent['operator']))\n| extend operatorGroupObj = parse_json(tostring(RawEvent['operatorGroup']))\n| extend IncidentId = tostring(RawEvent['id'])\n| extend IncidentNumber = tostring(RawEvent['number'])\n| extend Title = tostring(RawEvent['briefDescription'])\n| extend Description = tostring(RawEvent['request'])\n| extend Status = tostring(RawEvent['status'])\n| extend Priority = tostring(priorityObj['name'])\n| extend Impact = tostring(impactObj['name'])\n| extend Urgency = tostring(urgencyObj['name'])\n| extend Category = tostring(categoryObj['name'])\n| extend Subcategory = tostring(subcategoryObj['name'])\n| extend CallType = tostring(callTypeObj['name'])\n| extend CallerId = tostring(callerObj['id'])\n| extend CallerName = tostring(callerObj['name'])\n| extend OperatorId = tostring(operatorObj['id'])\n| extend OperatorName = tostring(operatorObj['name'])\n| extend OperatorGroupId = tostring(operatorGroupObj['id'])\n| extend OperatorGroupName = tostring(operatorGroupObj['name'])\n| extend CreatedDateTime = todatetime(RawEvent['creationDate'])\n| extend UpdatedDateTime = todatetime(RawEvent['modificationDate'])\n| extend ClosedDateTime = todatetime(RawEvent['closedDate'])\n| extend TargetDateTime = todatetime(RawEvent['targetDate'])\n| extend Archived = tobool(RawEvent['archived'])\n| extend IsPartial = tobool(RawEvent['partial'])\n| extend IsFirstLine = tobool(RawEvent['firstLine'])\n| extend IsSecondLine = tobool(RawEvent['secondLine'])\n| extend TimeGenerated = todatetime(RawEvent['modificationDate'])\n| project TimeGenerated, SourceSystem, IncidentId, IncidentNumber, Title, Description, Status, Priority, Impact, Urgency, Category, Subcategory, CallType, CallerId, CallerName, OperatorId, OperatorName, OperatorGroupId, OperatorGroupName, CreatedDateTime, UpdatedDateTime, ClosedDateTime, TargetDateTime, Archived, IsPartial, IsFirstLine, IsSecondLine, RawEvent",
+                    "transformKql": "source | extend TimeGenerated = todatetime(modificationDate)",
                     "outputStream": "Custom-TOPdeskIncidents_CL"
                   }
                 ]
@@ -278,111 +566,295 @@
                       "type": "datetime"
                     },
                     {
-                      "name": "SourceSystem",
+                      "name": "id",
                       "type": "string"
                     },
                     {
-                      "name": "IncidentId",
+                      "name": "status",
                       "type": "string"
                     },
                     {
-                      "name": "IncidentNumber",
+                      "name": "number",
                       "type": "string"
                     },
                     {
-                      "name": "Title",
+                      "name": "request",
                       "type": "string"
                     },
                     {
-                      "name": "Description",
+                      "name": "requests",
                       "type": "string"
                     },
                     {
-                      "name": "Status",
+                      "name": "action",
                       "type": "string"
                     },
                     {
-                      "name": "Priority",
+                      "name": "attachments",
                       "type": "string"
                     },
                     {
-                      "name": "Impact",
+                      "name": "caller",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "callerBranch",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "callerLocation",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "branchExtraFieldA",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "branchExtraFieldB",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "briefDescription",
                       "type": "string"
                     },
                     {
-                      "name": "Urgency",
+                      "name": "externalNumber",
                       "type": "string"
                     },
                     {
-                      "name": "Category",
-                      "type": "string"
+                      "name": "category",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "Subcategory",
-                      "type": "string"
+                      "name": "subcategory",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "CallType",
-                      "type": "string"
+                      "name": "callType",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "CallerId",
-                      "type": "string"
+                      "name": "entryType",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "CallerName",
-                      "type": "string"
+                      "name": "object",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "OperatorId",
-                      "type": "string"
+                      "name": "asset",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "OperatorName",
-                      "type": "string"
+                      "name": "branch",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "OperatorGroupId",
-                      "type": "string"
+                      "name": "location",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "OperatorGroupName",
-                      "type": "string"
+                      "name": "impact",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "CreatedDateTime",
+                      "name": "urgency",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "priority",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "duration",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "actualDuration",
+                      "type": "int"
+                    },
+                    {
+                      "name": "targetDate",
                       "type": "datetime"
                     },
                     {
-                      "name": "UpdatedDateTime",
+                      "name": "sla",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "onHold",
+                      "type": "boolean"
+                    },
+                    {
+                      "name": "onHoldDate",
                       "type": "datetime"
                     },
                     {
-                      "name": "ClosedDateTime",
+                      "name": "onHoldDuration",
+                      "type": "int"
+                    },
+                    {
+                      "name": "feedbackMessage",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "feedbackRating",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "operator",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "operatorGroup",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "supplier",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "processingStatus",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "responded",
+                      "type": "boolean"
+                    },
+                    {
+                      "name": "responseDate",
                       "type": "datetime"
                     },
                     {
-                      "name": "TargetDateTime",
+                      "name": "completed",
+                      "type": "boolean"
+                    },
+                    {
+                      "name": "completedDate",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "closed",
+                      "type": "boolean"
+                    },
+                    {
+                      "name": "closedDate",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "closureCode",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "timeSpent",
+                      "type": "int"
+                    },
+                    {
+                      "name": "timeSpentFirstLine",
+                      "type": "int"
+                    },
+                    {
+                      "name": "timeSpentSecondLine",
+                      "type": "int"
+                    },
+                    {
+                      "name": "timeSpentPartial",
+                      "type": "int"
+                    },
+                    {
+                      "name": "timeSpentLinkedPartials",
+                      "type": "int"
+                    },
+                    {
+                      "name": "timeSpentSecondLineAndPartials",
+                      "type": "int"
+                    },
+                    {
+                      "name": "itemCosts",
+                      "type": "int"
+                    },
+                    {
+                      "name": "objectCosts",
+                      "type": "int"
+                    },
+                    {
+                      "name": "costs",
+                      "type": "int"
+                    },
+                    {
+                      "name": "escalationStatus",
+                      "type": "string"
+                    },
+                    {
+                      "name": "escalationReason",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "escalationOperator",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "callDate",
                       "type": "datetime"
                     },
                     {
-                      "name": "Archived",
-                      "type": "bool"
+                      "name": "creator",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "IsPartial",
-                      "type": "bool"
+                      "name": "creationDate",
+                      "type": "datetime"
                     },
                     {
-                      "name": "IsFirstLine",
-                      "type": "bool"
+                      "name": "modifier",
+                      "type": "dynamic"
                     },
                     {
-                      "name": "IsSecondLine",
-                      "type": "bool"
+                      "name": "modificationDate",
+                      "type": "datetime"
                     },
                     {
-                      "name": "RawEvent",
+                      "name": "majorCall",
+                      "type": "boolean"
+                    },
+                    {
+                      "name": "majorCallObject",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "publishToSsd",
+                      "type": "boolean"
+                    },
+                    {
+                      "name": "monitored",
+                      "type": "boolean"
+                    },
+                    {
+                      "name": "expectedTimeSpent",
+                      "type": "int"
+                    },
+                    {
+                      "name": "archivingReason",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "mainIncident",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "optionalFields1",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "optionalFields2",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "externalLinks",
+                      "type": "dynamic"
+                    },
+                    {
+                      "name": "partialIncidents",
                       "type": "dynamic"
                     }
                   ]
