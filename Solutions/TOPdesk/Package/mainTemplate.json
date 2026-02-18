@@ -6,6 +6,14 @@
     "comments": "Solution template for TOPdesk"
   },
   "parameters": {
+    "location": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Not used, but needed to pass arm-ttk test `Location-Should-Not-Be-Hardcoded`.  We instead use the `workspace-location` which is derived from the LA workspace"
+      }
+    },
     "workspace-location": {
       "type": "string",
       "defaultValue": "",
@@ -18,6 +26,20 @@
       "type": "string",
       "metadata": {
         "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "resource group name where Microsoft Sentinel is setup"
+      }
+    },
+    "subscription": {
+      "type": "string",
+      "defaultValue": "[last(split(subscription().id, '/'))]",
+      "metadata": {
+        "description": "subscription id where Microsoft Sentinel is setup"
       }
     }
   },
@@ -34,13 +56,9 @@
     "dataConnectorTemplateNameConnectorDefinition1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition1')))]",
     "_dataConnectorContentIdConnections1": "TOPdeskIncidentsDefinitionConnections",
     "dataConnectorTemplateNameConnections1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections1')))]",
-    "subscriptionId": "[last(split(subscription().id, '/'))]",
-    "resourceGroupName": "[resourceGroup().name]",
-    "dataCollectionEndpointId1": "[resourceId(variables('subscriptionId'), variables('resourceGroupName'), 'Microsoft.Insights/dataCollectionEndpoints', parameters('workspace'))]",
+    "dataCollectionEndpointId1": "[concat('/subscriptions/',parameters('subscription'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
     "blanks": "[replace('b', 'b', '')]",
-    "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
-    "_contentProductIdDC1": "[concat(take(variables('_solutionId'), 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition1'),'-', variables('dataConnectorCCPVersion'))))]",
-    "_contentProductIdRDC1": "[concat(take(variables('_solutionId'), 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections1'),'-', variables('dataConnectorCCPVersion'))))]"
+    "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]"
   },
   "resources": [
     {
@@ -376,7 +394,7 @@
         "packageKind": "Solution",
         "packageVersion": "[variables('_solutionVersion')]",
         "packageName": "[variables('_solutionName')]",
-        "contentProductId": "[variables('_contentProductIdDC1')]",
+        "contentProductId": "[concat(take(variables('_solutionId'), 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition1'),'-', variables('dataConnectorCCPVersion'))))]",
         "packageId": "[variables('_solutionId')]",
         "contentSchemaVersion": "3.0.0",
         "version": "[variables('dataConnectorCCPVersion')]"
@@ -639,8 +657,7 @@
                   "retryCount": 3,
                   "rateLimitQPS": 10,
                   "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
-                  "startTimeAttributeName": "modification_date_start",
-                  "endTimeAttributeName": "modification_date_end",
+                  "startTimeAttributeName": "modificationDate",
                   "headers": {
                     "Accept": "application/json"
                   },
@@ -667,7 +684,7 @@
         "packageKind": "Solution",
         "packageVersion": "[variables('_solutionVersion')]",
         "packageName": "[variables('_solutionName')]",
-        "contentProductId": "[variables('_contentProductIdRDC1')]",
+        "contentProductId": "[concat(take(variables('_solutionId'), 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections1'),'-', variables('dataConnectorCCPVersion'))))]",
         "packageId": "[variables('_solutionId')]",
         "contentSchemaVersion": "3.0.0",
         "version": "[variables('dataConnectorCCPVersion')]"
@@ -683,11 +700,11 @@
         "contentSchemaVersion": "3.0.0",
         "displayName": "TOPdesk",
         "publisherDisplayName": "Wortell Enterprise Security",
-        "descriptionHtml": "<p><strong>Note:</strong> Please refer to the following before installing the solution:</p>\n<p>• Review the solution <a href=\"https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/TOPdesk/ReleaseNotes.md\">Release Notes</a></p>\n<p>• There may be <a href=\"https://aka.ms/sentinelsolutionsknownissues\">known issues</a> pertaining to this Solution, please refer to them before installing.</p>\n<p><a href=\"https://www.topdesk.com/en/itsm-software/\">TOPdesk ITSM-software</a> helps busy service teams handle incoming requests, automatically assign tasks to the right people, and see who's doing what - so you can stay ahead instead of just keeping up.</p>\n<p><strong>Underlying Microsoft Technologies used:</strong>\nThis solution takes a dependency on the following technologies, and some of these dependencies either may be in <a href=\"https://azure.microsoft.com/support/legal/preview-supplemental-terms/\">Preview</a> state or might result in additional ingestion or operational costs</p>\n<ol type=\"a\">\n<li><a href=\"https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector\">Codeless Connector Framework</a></li>\n</ol>\n<p><strong>Data Connectors:</strong> 1</p>\n<p><a href=\"https://aka.ms/azuresentinel\">Learn more about Microsoft Sentinel</a> | <a href=\"https://aka.ms/azuresentinelsolutionsdoc\">Learn more about Solutions</a></p>\n",
+        "descriptionHtml": "<p><strong>Note:</strong> Please refer to the following before installing the solution:</p>\n<p>• Review the solution <a href=\"https://github.com/Azure/Azure-Sentinel/tree/master/Solutions/TOPdesk/ReleaseNotes.md\">Release Notes</a></p>\n<p>• There may be <a href=\"https://aka.ms/sentinelsolutionsknownissues\">known issues</a> pertaining to this Solution, please refer to them before installing.</p>\n<p><a href=\"https://www.topdesk.com/en/itsm-software/\">TOPdesk ITSM-software</a> helps busy service teams handle incoming requests, automatically assign tasks to the right people, and see who's doing what - so you can stay ahead instead of just keeping up.</p>\n<p>This Data Connector is used to retrieve TOPdesk Incidents into Microsoft Sentinel.</p>\n<p><strong>Underlying Microsoft Technologies used:</strong>\nThis solution takes a dependency on the following technologies, and some of these dependencies either may be in <a href=\"https://azure.microsoft.com/support/legal/preview-supplemental-terms/\">Preview</a> state or might result in additional ingestion or operational costs</p>\n<ol type=\"a\">\n<li><a href=\"https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector\">Codeless Connector Framework</a></li>\n</ol>\n<p><strong>Data Connectors:</strong> 1</p>\n<p><a href=\"https://aka.ms/azuresentinel\">Learn more about Microsoft Sentinel</a> | <a href=\"https://aka.ms/azuresentinelsolutionsdoc\">Learn more about Solutions</a></p>\n",
         "contentKind": "Solution",
         "contentProductId": "[variables('_solutioncontentProductId')]",
         "id": "[variables('_solutioncontentProductId')]",
-        "icon": "<img src=\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/TOPdesk.svg\" width=\"75px\" height=\"75px\">",
+        "icon": "<img src=\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/TOPdesk.svg\" width=\"75px\" height=\"44px\">",
         "contentId": "[variables('_solutionId')]",
         "parentId": "[variables('_solutionId')]",
         "source": {

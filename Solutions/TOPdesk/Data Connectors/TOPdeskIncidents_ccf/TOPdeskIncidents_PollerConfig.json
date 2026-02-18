@@ -25,8 +25,7 @@
                 "retryCount": 3,
                 "rateLimitQPS": 10,
                 "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
-                "startTimeAttributeName": "modification_date_start",
-                "endTimeAttributeName": "modification_date_end",
+                "startTimeAttributeName": "modificationDate",
                 "headers": {
                     "Accept": "application/json"
                 },

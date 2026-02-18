@@ -247,8 +247,7 @@
             "page_size": "[parameters('pageSize')]"
           },
           "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
-          "startTimeAttributeName": "modification_date_start",
-          "endTimeAttributeName": "modification_date_end"
+          "startTimeAttributeName": "modificationDate"
         },
         "paging": {
           "pagingType": "Offset",
