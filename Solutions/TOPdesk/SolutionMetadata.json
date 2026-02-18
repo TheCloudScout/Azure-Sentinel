@@ -1,8 +1,8 @@
 {
     "publisherId": "azuresentinel",
     "offerId": "azure-sentinel-solution-topdeskincidents",
-    "firstPublishDate": "2026-02-10",
-    "lastPublishDate": "2026-02-10",
+    "firstPublishDate": "2026-02-18",
+    "lastPublishDate": "2026-02-18",
     "providers": [
         "TOPdesk"
     ],

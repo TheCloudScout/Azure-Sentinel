@@ -180,9 +180,9 @@
                   "type": "Textbox",
                   "parameters": {
                     "name": "topdeskBaseUrl",
-                    "label": "TOPdesk base URL (host only)",
-                    "description": "Example: yourtenant.topdesk.net",
-                    "placeholder": "yourtenant.topdesk.net",
+                    "label": "TOPdesk base URL (i.e. 'customer.topdesk.net')",
+                    "description": "Example: 'customer.topdesk.net'",
+                    "placeholder": "'customer.topdesk.net'",
                     "type": "text"
                   }
                 },

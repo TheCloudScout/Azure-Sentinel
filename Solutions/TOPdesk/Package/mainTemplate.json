@@ -6,14 +6,6 @@
     "comments": "Solution template for TOPdesk"
   },
   "parameters": {
-    "location": {
-      "type": "string",
-      "minLength": 1,
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Not used, but needed to pass arm-ttk test `Location-Should-Not-Be-Hardcoded`.  We instead use the `workspace-location` which is derived from the LA workspace"
-      }
-    },
     "workspace-location": {
       "type": "string",
       "defaultValue": "",
@@ -26,20 +18,6 @@
       "type": "string",
       "metadata": {
         "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
-      }
-    },
-    "resourceGroupName": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().name]",
-      "metadata": {
-        "description": "resource group name where Microsoft Sentinel is setup"
-      }
-    },
-    "subscription": {
-      "type": "string",
-      "defaultValue": "[last(split(subscription().id, '/'))]",
-      "metadata": {
-        "description": "subscription id where Microsoft Sentinel is setup"
       }
     }
   },
@@ -56,7 +34,9 @@
     "dataConnectorTemplateNameConnectorDefinition1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition1')))]",
     "_dataConnectorContentIdConnections1": "TOPdeskIncidentsDefinitionConnections",
     "dataConnectorTemplateNameConnections1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections1')))]",
-    "dataCollectionEndpointId1": "[resourceId(parameters('subscription'), parameters('resourceGroupName'), 'Microsoft.Insights/dataCollectionEndpoints', parameters('workspace'))]",
+    "subscriptionId": "[last(split(subscription().id, '/'))]",
+    "resourceGroupName": "[resourceGroup().name]",
+    "dataCollectionEndpointId1": "[resourceId(variables('subscriptionId'), variables('resourceGroupName'), 'Microsoft.Insights/dataCollectionEndpoints', parameters('workspace'))]",
     "blanks": "[replace('b', 'b', '')]",
     "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
     "_contentProductIdDC1": "[concat(take(variables('_solutionId'), 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition1'),'-', variables('dataConnectorCCPVersion'))))]",
@@ -148,7 +128,7 @@
                           "type": "Textbox",
                           "parameters": {
                             "name": "topdeskBaseUrl",
-                            "label": "TOPdesk base URL (host only)",
+                            "label": "TOPdesk base URL (i.e. 'customer.topdesk.net')",
                             "type": "text",
                             "validations": {
                               "required": true
@@ -469,7 +449,7 @@
                   "type": "Textbox",
                   "parameters": {
                     "name": "topdeskBaseUrl",
-                    "label": "TOPdesk base URL (host only)",
+                    "label": "TOPdesk base URL (i.e. 'customer.topdesk.net')",
                     "type": "text",
                     "validations": {
                       "required": true
@@ -735,8 +715,8 @@
             }
           ]
         },
-        "firstPublishDate": "2026-02-10",
-        "lastPublishDate": "2026-02-10",
+        "firstPublishDate": "2026-02-18",
+        "lastPublishDate": "2026-02-18",
         "providers": [
           "TOPdesk"
         ],

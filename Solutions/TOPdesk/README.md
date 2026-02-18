@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/TOPdesk.svg" alt="TOPdesk" width="20%"/><br>
 
-This solution ingests **TOPdesk ITSM incidents** into Microsoft Sentinel using the [Codeless Connector Framework](https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector).
+This solution ingests **TOPdesk ITSM Incidents** into Microsoft Sentinel using the [Codeless Connector Framework](https://learn.microsoft.com/en-us/azure/sentinel/create-codeless-connector).
 
 ## Overview
 

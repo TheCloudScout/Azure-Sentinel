@@ -64,7 +64,7 @@
                             "type": "Textbox",
                             "parameters": {
                                 "name": "topdeskBaseUrl",
-                                "label": "TOPdesk base URL (host only)",
+                                "label": "TOPdesk base URL (i.e. 'customer.topdesk.net')",
                                 "type": "text",
                                 "validations": {
                                     "required": true
